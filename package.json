@@ -1,0 +1,21 @@
+{
+  "name": "todo-share-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon ./server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "nodemon": "^1.18.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/register": "^7.0.0",
+    "jest": "^24.1.0",
+    "supertest": "^3.4.2"
+  }
+}
