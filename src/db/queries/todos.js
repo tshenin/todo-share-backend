@@ -1,9 +1,21 @@
 const knex = require('../connection');
 
-const getAllTodos = () => {
-    return knex('todos').select('*');
-};
+const getAllTodos = () =>
+    knex('todos')
+        .select('*');
+
+const getTodoById = id =>
+    knex('todos')
+        .select('*')
+        .where({ id: parseInt(id) });
+
+const addTodo = todo =>
+    knex('todos')
+        .insert(todo)
+        .returning('*');
 
 module.exports = {
-    getAllTodos
+    getAllTodos,
+    getTodoById,
+    addTodo
 };

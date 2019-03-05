@@ -15,4 +15,47 @@ router.get(BASE_URL, async ctx => {
     }
 });
 
+router.get(`${BASE_URL}/:id`, async ctx => {
+    try {
+        const { id } = ctx.params;
+        const todo = await query.getTodoById(id);
+        if (todo.length) {
+            ctx.body = {
+                status: 'success',
+                data: todo
+            };
+        } else {
+            ctx.status = 404;
+            ctx.body = {
+                status: 'error',
+                message: `No movie with id=${id}`,
+            };
+        }
+    } catch (e) {
+        console.error(e);
+    }
+});
+
+router.post(`${BASE_URL}`, async ctx => {
+    try {
+        const { body } = ctx.request;
+        const res = await query.addTodo(body);
+        if (res.length) {
+            ctx.status = 201;
+            ctx.body = {
+                status: 'success',
+                data: res,
+            };
+        } else {
+            ctx.status = 400;
+            ctx.body = {
+                status: 'error',
+                message: 'Something went wrong.'
+            };
+        }
+    } catch (e) {
+        console.error(e);
+    }
+});
+
 module.exports = router;
