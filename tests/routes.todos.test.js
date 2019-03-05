@@ -5,9 +5,9 @@ const knex = require('../src/db/connection');
 describe('routes: todos', () => {
 
     beforeEach(async () => {
-        await knex.migrate.rollback()
-        await knex.migrate.latest()
-        await knex.seed.run()
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
     afterEach(async () => {
@@ -21,13 +21,31 @@ describe('routes: todos', () => {
         expect(response.body.status).toEqual('success');
     });
 
-    test('get all todos', async () => {
+    test('add new todo', async () => {
         const response = await request(server)
             .post('/todos')
             .send({ title: "New from test", desc: "New desc" });
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
+    });
+
+    test('update todo', async () => {
+        const todos = await knex.select('*').from('todos');
+        const todo = todos[0];
+        const response = await request(server)
+            .put(`/todos/${todo.id}`)
+            .send({ desc: "Updated desc" });
+        expect(response.status).toEqual(200);
+        expect(response.type).toEqual('application/json');
+        expect(response.body.status).toEqual('success');
+    });
+
+    test('update todo: should be an error', async () => {
+        const response = await request(server)
+            .put('/todos/99999')
+            .send({ desc: "Updated desc" });
+        expect(response.status).toEqual(404);
     });
 });
 

@@ -54,7 +54,38 @@ router.post(`${BASE_URL}`, async ctx => {
             };
         }
     } catch (e) {
-        console.error(e);
+        ctx.status = 400;
+        ctx.body = {
+            status: 'error',
+            message: e.message || 'Sorry, an error has occurred.'
+        };
+    }
+});
+
+router.put(`${BASE_URL}/:id`, async ctx => {
+    try {
+        const { id } = ctx.params;
+        const { body } = ctx.request;
+        const res = await query.updateTodo(id, body);
+        if (res.length) {
+            ctx.status = 200;
+            ctx.body = {
+                status: 'success',
+                data: res,
+            };
+        } else {
+            ctx.status = 404;
+            ctx.body = {
+                status: 'error',
+                message: 'Something went wrong.'
+            };
+        }
+    } catch (e) {
+        ctx.status = 400;
+        ctx.body = {
+            status: 'error',
+            message: e.message || 'Sorry, an error has occurred.'
+        };
     }
 });
 

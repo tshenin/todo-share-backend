@@ -14,8 +14,15 @@ const addTodo = todo =>
         .insert(todo)
         .returning('*');
 
+const updateTodo = (id, data) =>
+    knex('todos')
+        .update(data)
+        .where({ id: parseInt(id) })
+        .returning('*');
+
 module.exports = {
     getAllTodos,
     getTodoById,
-    addTodo
+    addTodo,
+    updateTodo,
 };
