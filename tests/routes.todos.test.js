@@ -47,6 +47,15 @@ describe('routes: todos', () => {
             .send({ desc: "Updated desc" });
         expect(response.status).toEqual(404);
     });
+
+    test('delete todo', async () => {
+        const todos = await knex.select('*').from('todos');
+        const todo = todos[0];
+        const response = await request(server).delete(`/todos/${todo.id}`);
+        expect(response.status).toEqual(200);
+        expect(response.type).toEqual('application/json');
+        expect(response.body.status).toEqual('success');
+    });
 });
 
 afterAll(() => {

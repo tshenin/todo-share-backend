@@ -20,9 +20,16 @@ const updateTodo = (id, data) =>
         .where({ id: parseInt(id) })
         .returning('*');
 
+const deleteTodo = id =>
+    knex('todos')
+        .del()
+        .where({ id: parseInt(id) })
+        .returning('*');
+
 module.exports = {
     getAllTodos,
     getTodoById,
     addTodo,
     updateTodo,
+    deleteTodo,
 };

@@ -10,6 +10,6 @@ describe('basic test', () => {
     });
 });
 
-afterAll(() => {
-    server.close();
-})
+afterAll(done => {
+    server.close(done);
+});

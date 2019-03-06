@@ -3,6 +3,9 @@ const query = require('../db/queries/todos');
 const router = new Router();
 const BASE_URL = '/todos';
 
+/**
+ * Get all todos
+ */
 router.get(BASE_URL, async ctx => {
     try {
         const todos = await query.getAllTodos();
@@ -15,6 +18,9 @@ router.get(BASE_URL, async ctx => {
     }
 });
 
+/**
+ * Get todo by id
+ */
 router.get(`${BASE_URL}/:id`, async ctx => {
     try {
         const { id } = ctx.params;
@@ -36,6 +42,9 @@ router.get(`${BASE_URL}/:id`, async ctx => {
     }
 });
 
+/**
+ * Create new todo
+ */
 router.post(`${BASE_URL}`, async ctx => {
     try {
         const { body } = ctx.request;
@@ -62,11 +71,43 @@ router.post(`${BASE_URL}`, async ctx => {
     }
 });
 
+/**
+ * Update todo
+ */
 router.put(`${BASE_URL}/:id`, async ctx => {
     try {
         const { id } = ctx.params;
         const { body } = ctx.request;
         const res = await query.updateTodo(id, body);
+        if (res.length) {
+            ctx.status = 200;
+            ctx.body = {
+                status: 'success',
+                data: res,
+            };
+        } else {
+            ctx.status = 404;
+            ctx.body = {
+                status: 'error',
+                message: 'Something went wrong.'
+            };
+        }
+    } catch (e) {
+        ctx.status = 400;
+        ctx.body = {
+            status: 'error',
+            message: e.message || 'Sorry, an error has occurred.'
+        };
+    }
+});
+
+/**
+ * Delete todo
+ */
+router.delete(`${BASE_URL}/:id`, async ctx => {
+    try {
+        const { id } = ctx.params;
+        const res = await query.deleteTodo(id);
         if (res.length) {
             ctx.status = 200;
             ctx.body = {
