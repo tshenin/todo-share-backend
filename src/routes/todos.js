@@ -34,7 +34,7 @@ router.get(`${BASE_URL}/:id`, async ctx => {
             ctx.status = 404;
             ctx.body = {
                 status: 'error',
-                message: `No movie with id=${id}`,
+                message: `No board with id=${id}`,
             };
         }
     } catch (e) {

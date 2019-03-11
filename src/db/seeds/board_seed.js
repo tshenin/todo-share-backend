@@ -10,7 +10,7 @@ exports.seed = async knex => {
 
     await knex('boards').insert({
         title: `board 2`,
-        desc: `Description 3`,
+        desc: `Description 2`,
     });
 
     return knex;
