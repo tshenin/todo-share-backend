@@ -4,3 +4,5 @@ todo
 - rewrite to typescript (maybe)
 - add linter
 - add pm2
+- add loging
+- add monitoring
