@@ -14,7 +14,7 @@ module.exports = {
     },
     development: {
         client: 'pg',
-        connection: 'postgres://localhost:5432/todo-share',
+        connection: 'postgres://localhost:5432/todo-share-dev',
         migrations: {
             directory: path.join(BASE_PATH, 'migrations')
         },
