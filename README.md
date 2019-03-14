@@ -6,3 +6,5 @@ todo
 - add pm2
 - add loging
 - add monitoring
+- add auto build on push
+- add test runner on build
