@@ -1,6 +1,8 @@
 const path = require('path');
 const BASE_PATH = path.join(__dirname, 'src', 'db')
 
+require('dotenv').config();
+
 module.exports = {
     test: {
         client: 'pg',
@@ -25,11 +27,11 @@ module.exports = {
     production: {
         client: 'pg',
         connection: {
-            port: process.env.DATABASE_PORT,
-            host: process.env.DATABASE_HOST,
-            database: process.env.DATABASE_NAME,
-            user: process.env.DATABASE_USER,
-            password: process.env.DATABASE_PASSWORD,
+            port: process.env.DB_PORT,
+            host: process.env.DB_HOST,
+            database: process.env.DB_NAME,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
         },
         migrations: {
             directory: path.join(BASE_PATH, 'migrations')

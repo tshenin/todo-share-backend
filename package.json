@@ -8,6 +8,7 @@
     "test": "jest --forceExit --detectOpenHandles --runInBand"
   },
   "dependencies": {
+    "dotenv": "^7.0.0",
     "knex": "^0.16.3",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
