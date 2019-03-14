@@ -3,4 +3,4 @@ todo
 - add error handling tests
 - rewrite to typescript (maybe)
 - add linter
-- deploy
+- add pm2
