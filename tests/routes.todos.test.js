@@ -1,6 +1,16 @@
 const request = require('supertest');
-const server = require('../src/server');
+const app = require('../src/app');
 const knex = require('../src/db/connection');
+
+let server;
+let agent;
+beforeAll(done => {
+    server = app.listen(4000, err => {
+        if (err) return done(err);
+        agent = request.agent(server);
+        done();
+    });
+});
 
 describe('routes: todos', () => {
 
@@ -15,16 +25,16 @@ describe('routes: todos', () => {
     });
 
     test('get all todos', async () => {
-        const response = await request(server).get('/todos');
+        const response = await agent.get('/todos');
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
     });
 
     test('add new todo', async () => {
-        const response = await request(server)
-            .post('/todos')
+        const response = await agent.post('/todos')
             .send({ title: "New from test", desc: "New desc" });
+
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -33,8 +43,7 @@ describe('routes: todos', () => {
     test('update todo', async () => {
         const todos = await knex.select('*').from('todos');
         const todo = todos[0];
-        const response = await request(server)
-            .put(`/todos/${todo.id}`)
+        const response = await agent.put(`/todos/${todo.id}`)
             .send({ desc: "Updated desc" });
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
@@ -42,19 +51,9 @@ describe('routes: todos', () => {
     });
 
     test('update todo: should be an error', async () => {
-        const response = await request(server)
-            .put('/todos/99999')
+        const response = await agent.put('/todos/99999')
             .send({ desc: "Updated desc" });
         expect(response.status).toEqual(404);
-    });
-
-    test('delete todo', async () => {
-        const todos = await knex.select('*').from('todos');
-        const todo = todos[0];
-        const response = await request(server).delete(`/todos/${todo.id}`);
-        expect(response.status).toEqual(200);
-        expect(response.type).toEqual('application/json');
-        expect(response.body.status).toEqual('success');
     });
 });
 

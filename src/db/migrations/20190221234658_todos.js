@@ -1,7 +1,7 @@
 
 exports.up = knex =>
     knex.schema.createTable('todos', table => {
-        table.increments();
+        table.increments('id');
         table.string('title').notNullable();
         table.string('desc').notNullable();
     });
