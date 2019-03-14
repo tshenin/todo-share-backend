@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         {
             name: "todo-share",
-            script: "./src/server.js",
+            script: "./server.js",
             env_production: {
                 "NODE_ENV": "production"
             }
