@@ -31,6 +31,13 @@ describe('routes: todos', () => {
         expect(response.body.status).toEqual('success');
     });
 
+    test('get todo by board id', async () => {
+        const response = await agent.get('/todos?board=1');
+        expect(response.status).toEqual(200);
+        expect(response.type).toEqual('application/json');
+        expect(response.body.status).toEqual('success');
+    });
+
     test('add new todo', async () => {
         const response = await agent.post('/todos')
             .send({ title: "New from test", desc: "New desc" });

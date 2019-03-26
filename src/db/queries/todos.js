@@ -26,10 +26,16 @@ const deleteTodo = id =>
         .where({ id: parseInt(id) })
         .returning('*');
 
+const getTodosByBoardId = id =>
+    knex('todos')
+        .select('*')
+        .where({ board_id: id });
+
 module.exports = {
     getAllTodos,
     getTodoById,
     addTodo,
     updateTodo,
     deleteTodo,
+    getTodosByBoardId,
 };

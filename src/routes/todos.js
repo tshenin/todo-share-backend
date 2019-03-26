@@ -4,11 +4,17 @@ const router = new Router();
 const BASE_URL = '/todos';
 
 /**
- * Get all todos
+ * Get all todos or get all todos for board
  */
 router.get(BASE_URL, async ctx => {
+    let todos = [];
     try {
-        const todos = await query.getAllTodos();
+        const { board } = ctx.query;
+        if (board) {
+            todos = await query.getTodosByBoardId(board);
+        } else {
+            todos = await query.getAllTodos();
+        }
         ctx.body = {
             status: 'success',
             data: todos
