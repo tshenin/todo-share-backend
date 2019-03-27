@@ -6,3 +6,4 @@ todo
 - add loging
 - add auto build on push
 - add test runner on build
+- provide dev.domain and main domain (port?)
