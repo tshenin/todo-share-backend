@@ -7,3 +7,5 @@ todo
 - add auto build on push
 - add test runner on build
 - provide dev.domain and main domain (port?)
+- validate board and todo
+- add status field for todos
