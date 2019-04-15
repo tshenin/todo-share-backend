@@ -9,3 +9,4 @@ todo
 - provide dev.domain and main domain (port?)
 - validate board and todo
 - add status field for todos
+- change LocalStratefy to JWT
