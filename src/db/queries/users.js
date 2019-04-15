@@ -1,9 +1,14 @@
 const knex = require('../connection');
 
-const s = () =>
+const addUser = user =>
     knex('users')
-        .select('*');
+        .insert({
+            username: user.username,
+            password: user.password,
+        })
+        .returning('*');
 
 
 module.exports = {
+    addUser
 };

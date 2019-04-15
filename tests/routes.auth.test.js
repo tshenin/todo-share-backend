@@ -12,7 +12,7 @@ beforeAll(done => {
     });
 });
 
-describe('routes: auth', () => {
+describe('routes: auth/register', () => {
 
     beforeEach(async () => {
         await knex.migrate.rollback();
@@ -24,11 +24,23 @@ describe('routes: auth', () => {
         await knex.migrate.rollback();
     });
 
-    test('get register route', async () => {
-        const response = await agent.get('/auth/register');
-        expect(response.status).toEqual(200);
-        expect(response.type).toEqual('text/plain');
+    test('register user', async () => {
+        const response = await agent.post('/auth/register')
+            .send({
+                username: 'new',
+                password: 'user'
+            });
+        expect(response.status).toEqual(201);
     });
+
+    // test('login user', async () => {
+    //     const response = await agent.post('/auth/login')
+    //         .send({
+    //             username: 'figaro',
+    //             password: 'secretinfo',
+    //         });
+    //     expect(response.status).toEqual(200);
+    // });
 });
 
 afterAll(done => {

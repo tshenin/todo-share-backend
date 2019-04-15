@@ -33,7 +33,7 @@ describe('routes: boards', () => {
 
     test('add new board', async () => {
         const response = await agent.post('/boards')
-            .send({ title: "New from test", desc: "New desc" });
+            .send({ title: 'New from test', desc: 'New desc' });
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -43,7 +43,7 @@ describe('routes: boards', () => {
         const boards = await knex.select('*').from('boards');
         const board = boards[0];
         const response = await agent.put(`/boards/${board.id}`)
-            .send({ desc: "Updated desc" });
+            .send({ desc: 'Updated desc' });
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -51,7 +51,7 @@ describe('routes: boards', () => {
 
     test('update board: should be an error', async () => {
         const response = await agent.put('/boards/99999')
-            .send({ desc: "Updated desc" });
+            .send({ desc: 'Updated desc' });
         expect(response.status).toEqual(404);
     });
 });
