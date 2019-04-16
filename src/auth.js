@@ -1,10 +1,16 @@
 const passport = require('koa-passport');
+const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+
 const knex = require('./db/connection');
 
-const options = {};
-options.secretOrKey = 'secret';
+const localStrategyOptions = { session: false };
+const jwtStrategyOptions = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: 'secret_token',
+};
+
 
 passport.serializeUser((user, done) => { return done(null, user.id) });
 
@@ -17,7 +23,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-passport.use(new JwtStrategy(options, (username, password, done) => {
+passport.use(new LocalStrategy(localStrategyOptions, (username, password, done) => {
     knex('users').where({ username }).first()
         .then((user) => {
             if (!user) return done(null, false);
@@ -26,6 +32,16 @@ passport.use(new JwtStrategy(options, (username, password, done) => {
             } else {
                 return done(null, false);
             }
+        })
+        .catch((err) => { return done(err); });
+}));
+
+passport.use(new JwtStrategy(jwtStrategyOptions, (jwtPayload, done) => {
+    knex('users').where({ id: jwtPayload.id }).first()
+        .then((user) => {
+            if (!user) return done(null, false);
+
+            return done(null, user);
         })
         .catch((err) => { return done(err); });
 }));

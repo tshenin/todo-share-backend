@@ -26,21 +26,29 @@ describe('routes: auth/register', () => {
 
     test('register user', async () => {
         const response = await agent.post('/auth/register')
-            .send({
-                username: 'new',
-                password: 'user'
-            });
+            .send({ username: 'new', password: 'user' });
         expect(response.status).toEqual(201);
     });
 
-    // test('login user', async () => {
-    //     const response = await agent.post('/auth/login')
-    //         .send({
-    //             username: 'figaro',
-    //             password: 'secretinfo',
-    //         });
-    //     expect(response.status).toEqual(200);
-    // });
+    test('login user', async () => {
+        const response = await agent.post('/auth/login')
+            .send({ username: 'figaro', password: 'secretinfo' });
+        expect(response.status).toEqual(200);
+        expect(response.body.token).toBeDefined();
+        expect(response.body.id).toBeDefined();
+    });
+
+    test('status route', async () => {
+        const login = await agent.post('/auth/login')
+            .send({ username: 'figaro', password: 'secretinfo' })
+
+        const response = await agent.post('/auth/status')
+            .set('Authorization', `bearer ${login.body.token}`)
+
+        expect(response.status).toEqual(200);
+        expect(response.body.id).toBeDefined();
+    });
+
 });
 
 afterAll(done => {
