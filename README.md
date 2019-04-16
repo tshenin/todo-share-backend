@@ -10,3 +10,5 @@ todo
 - validate board and todo
 - add status field for todos
 - change LocalStratefy to JWT
+- separate e2e tests and unit tests
+- add travis
