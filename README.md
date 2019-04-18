@@ -11,3 +11,4 @@ todo
 - add status field for todos
 - separate e2e tests and unit tests
 - add travis
+- add service between routes and queries
