@@ -39,8 +39,14 @@ describe('routes: todos', () => {
     });
 
     test('add new todo', async () => {
+        const boards = await agent.get('/boards');
+        let board = boards.body.data[0];
         const response = await agent.post('/todos')
-            .send({ title: "New from test", desc: "New desc" });
+            .send({
+                title: 'New from test',
+                desc: 'New desc',
+                board_id: board.id
+            });
 
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
@@ -51,7 +57,7 @@ describe('routes: todos', () => {
         const todos = await knex.select('*').from('todos');
         const todo = todos[0];
         const response = await agent.put(`/todos/${todo.id}`)
-            .send({ desc: "Updated desc" });
+            .send({ desc: 'Updated desc' });
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -59,7 +65,7 @@ describe('routes: todos', () => {
 
     test('update todo: should be an error', async () => {
         const response = await agent.put('/todos/99999')
-            .send({ desc: "Updated desc" });
+            .send({ desc: 'Updated desc' });
         expect(response.status).toEqual(404);
     });
 });

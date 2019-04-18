@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../src/app');
 const knex = require('../src/db/connection');
 
+let token;
+let userId;
 let server;
 let agent;
 beforeAll(done => {
@@ -18,6 +20,11 @@ describe('routes: boards', () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();
         await knex.seed.run();
+
+        const response = await agent.post('/auth/login')
+            .send({ username: 'figaro', password: 'secretinfo' })
+        token = response.body.token;
+        userId = response.body.id;
     });
 
     afterEach(async () => {
@@ -33,7 +40,11 @@ describe('routes: boards', () => {
 
     test('add new board', async () => {
         const response = await agent.post('/boards')
-            .send({ title: 'New from test', desc: 'New desc' });
+            .send({
+                title: 'New from test',
+                desc: 'New desc',
+                user_id: userId
+            });
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
