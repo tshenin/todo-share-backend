@@ -41,7 +41,7 @@ router.post('/auth/status', (ctx) => {
             ctx.body = { id: user.id };
         } else {
             ctx.status = 400;
-            ctx.body = { status: 'No such user' };
+            ctx.body = { status: 'Not Authorized' };
         }
     })(ctx);
 });
