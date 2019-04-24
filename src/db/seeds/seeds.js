@@ -3,8 +3,6 @@ exports.seed = async knex => {
     await knex('boards').del();
     await knex('users').del();
 
-
-
     // Create user
     await knex('users').insert({
         username: 'figaro',

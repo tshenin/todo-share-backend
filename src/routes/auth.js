@@ -34,14 +34,14 @@ router.post('/auth/login', (ctx) => {
     })(ctx);
 });
 
-router.post('/auth/status', (ctx) => {
+router.get('/auth/status', (ctx) => {
     return passport.authenticate('jwt', (err, user) => {
         if (user) {
             ctx.status = 200;
             ctx.body = { id: user.id };
         } else {
             ctx.status = 400;
-            ctx.body = { status: 'Not Authorized' };
+            ctx.body = 'Not Authorized';
         }
     })(ctx);
 });
