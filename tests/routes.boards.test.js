@@ -21,10 +21,10 @@ describe('routes: boards', () => {
         await knex.migrate.latest();
         await knex.seed.run();
 
-        const response = await agent.post('/auth/login')
-            .send({ username: 'figaro', password: 'secretinfo' })
-        token = response.body.token;
-        userId = response.body.id;
+        const login = await agent.post('/auth/login')
+            .send({ username: 'figaro', password: 'secretinfo' });
+        token = login.body.token;
+        userId = login.body.id;
     });
 
     afterEach(async () => {
@@ -32,7 +32,10 @@ describe('routes: boards', () => {
     });
 
     test('get all boards', async () => {
-        const response = await agent.get('/boards');
+        const response = await agent.get('/boards')
+            .set('Authorization', `bearer ${token}`);
+
+        console.log(response);
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');

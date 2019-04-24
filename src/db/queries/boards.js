@@ -1,8 +1,9 @@
 const knex = require('../connection');
 
-const getAllBoards = () =>
+const getAllBoards = user_id =>
     knex('boards')
-        .select('*');
+        .select('*')
+        .where({ user_id });
 
 const getBoardById = id =>
     knex('boards')

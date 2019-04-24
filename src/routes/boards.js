@@ -1,31 +1,45 @@
 const Router = require('koa-router');
+const passport = require('koa-passport');
+
 const query = require('../db/queries/boards');
 const router = new Router();
-const BASE_URL = '/boards';
 
 /**
  * Get all boards
  */
-router.get(BASE_URL, async ctx => {
-    try {
-        const boards = await query.getAllBoards();
-        ctx.body = {
-            status: 'success',
-            data: boards
-        };
-    } catch (e) {
-        console.error(e);
-    }
+router.get('/boards', ctx => {
+    passport.authenticate('jwt', async (err, user) => {
+        if (user) {
+            try {
+                const boards = await query.getAllBoards(user.id);
+                ctx.status = 200;
+                ctx.body = {
+                    status: 'success',
+                    data: boards
+                };
+            } catch (e) {
+                ctx.status = 500;
+                ctx.body = {
+                    status: 'error',
+                    message: e.message || 'Server error',
+                };
+            }
+        } else {
+            ctx.status = 403;
+            ctx.body = 'Not Authorized';
+        }
+    })(ctx);
 });
 
 /**
  * Get board by id
  */
-router.get(`${BASE_URL}/:id`, async ctx => {
+router.get('/boards/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const board = await query.getBoardById(id);
         if (board.length) {
+            ctx.status = 200;
             ctx.body = {
                 status: 'success',
                 data: board
@@ -34,7 +48,7 @@ router.get(`${BASE_URL}/:id`, async ctx => {
             ctx.status = 404;
             ctx.body = {
                 status: 'error',
-                message: `No todo with id=${id}`,
+                message: e.message || `No todo with id=${id}`,
             };
         }
     } catch (e) {
@@ -45,7 +59,7 @@ router.get(`${BASE_URL}/:id`, async ctx => {
 /**
  * Create new board
  */
-router.post(`${BASE_URL}`, async ctx => {
+router.post('/boards', async ctx => {
     try {
         const { body } = ctx.request;
         const res = await query.addBoard(body);
@@ -74,7 +88,7 @@ router.post(`${BASE_URL}`, async ctx => {
 /**
  * Update board
  */
-router.put(`${BASE_URL}/:id`, async ctx => {
+router.put('/boards/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const { body } = ctx.request;
@@ -104,7 +118,7 @@ router.put(`${BASE_URL}/:id`, async ctx => {
 /**
  * Delete board
  */
-router.delete(`${BASE_URL}/:id`, async ctx => {
+router.delete('/boards/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const res = await query.deleteBoard(id);

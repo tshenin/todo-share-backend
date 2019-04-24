@@ -40,7 +40,7 @@ describe('routes: auth/register', () => {
 
     test('status route', async () => {
         const login = await agent.post('/auth/login')
-            .send({ username: 'figaro', password: 'secretinfo' })
+            .send({ username: 'figaro', password: 'secretinfo' });
 
         const response = await agent.post('/auth/status')
             .set('Authorization', `bearer ${login.body.token}`)

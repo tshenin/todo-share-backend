@@ -9,7 +9,6 @@ const router = new Router();
 router.post('/auth/register', async (ctx) => {
     try {
         const response = await queries.addUser(ctx.request.body);
-
         ctx.status = 201;
         ctx.body = {
             status: 'success',
