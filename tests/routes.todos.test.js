@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../src/app');
 const knex = require('../src/db/connection');
 
+let token;
+let userId;
 let server;
 let agent;
 beforeAll(done => {
@@ -18,6 +20,11 @@ describe('routes: todos', () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();
         await knex.seed.run();
+
+        const login = await agent.post('/auth/login')
+            .send({ username: 'figaro', password: 'secretinfo' });
+        token = login.body.token;
+        userId = login.body.id;
     });
 
     afterEach(async () => {
@@ -39,7 +46,8 @@ describe('routes: todos', () => {
     });
 
     test('add new todo', async () => {
-        const boards = await agent.get('/boards');
+        const boards = await agent.get('/boards')
+            .set('Authorization', `bearer ${token}`);
         let board = boards.body.data[0];
         const response = await agent.post('/todos')
             .send({

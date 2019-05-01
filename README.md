@@ -12,3 +12,5 @@ todo
 - separate e2e tests and unit tests
 - add travis
 - add service between routes and queries
+- trim and encode/decode bofore saving/returning in base
+- check jwt for todos

@@ -35,7 +35,6 @@ describe('routes: boards', () => {
         const response = await agent.get('/boards')
             .set('Authorization', `bearer ${token}`);
 
-        console.log(response);
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -47,17 +46,23 @@ describe('routes: boards', () => {
                 title: 'New from test',
                 desc: 'New desc',
                 user_id: userId
-            });
+            })
+            .set('Authorization', `bearer ${token}`);
+
         expect(response.status).toEqual(201);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
     });
 
     test('update board', async () => {
-        const boards = await knex.select('*').from('boards');
-        const board = boards[0];
+        const boards = await agent.get('/boards')
+            .set('Authorization', `bearer ${token}`);
+        const board = boards.body.data[0];
+
         const response = await agent.put(`/boards/${board.id}`)
-            .send({ desc: 'Updated desc' });
+            .send({ desc: 'Updated desc' })
+            .set('Authorization', `bearer ${token}`);
+
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -65,7 +70,9 @@ describe('routes: boards', () => {
 
     test('update board: should be an error', async () => {
         const response = await agent.put('/boards/99999')
-            .send({ desc: 'Updated desc' });
+            .send({ desc: 'Updated desc' })
+            .set('Authorization', `bearer ${token}`);
+
         expect(response.status).toEqual(404);
     });
 });

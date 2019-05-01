@@ -42,7 +42,7 @@ describe('routes: auth/register', () => {
         const login = await agent.post('/auth/login')
             .send({ username: 'figaro', password: 'secretinfo' });
 
-        const response = await agent.post('/auth/status')
+        const response = await agent.get('/auth/status')
             .set('Authorization', `bearer ${login.body.token}`)
 
         expect(response.status).toEqual(200);

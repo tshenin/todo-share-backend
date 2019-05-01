@@ -1,12 +1,12 @@
 const Router = require('koa-router');
 const query = require('../db/queries/todos');
+
 const router = new Router();
-const BASE_URL = '/todos';
 
 /**
  * Get all todos or get all todos for board
  */
-router.get(BASE_URL, async ctx => {
+router.get('/todos', async ctx => {
     let todos = [];
     try {
         const { board } = ctx.query;
@@ -27,7 +27,7 @@ router.get(BASE_URL, async ctx => {
 /**
  * Get todo by id
  */
-router.get(`${BASE_URL}/:id`, async ctx => {
+router.get('/todos/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const todo = await query.getTodoById(id);
@@ -51,7 +51,7 @@ router.get(`${BASE_URL}/:id`, async ctx => {
 /**
  * Create new todo
  */
-router.post(`${BASE_URL}`, async ctx => {
+router.post('/todos', async ctx => {
     try {
         const { body } = ctx.request;
         const res = await query.addTodo(body);
@@ -80,7 +80,7 @@ router.post(`${BASE_URL}`, async ctx => {
 /**
  * Update todo
  */
-router.put(`${BASE_URL}/:id`, async ctx => {
+router.put('/todos/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const { body } = ctx.request;
@@ -110,7 +110,7 @@ router.put(`${BASE_URL}/:id`, async ctx => {
 /**
  * Delete todo
  */
-router.delete(`${BASE_URL}/:id`, async ctx => {
+router.delete('/todos/:id', async ctx => {
     try {
         const { id } = ctx.params;
         const res = await query.deleteTodo(id);

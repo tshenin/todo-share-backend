@@ -1,43 +1,54 @@
 const Router = require('koa-router');
-const passport = require('koa-passport');
 
 const query = require('../db/queries/boards');
+const { authorize } = require('../services/auth.service');
 const router = new Router();
 
 /**
  * Get all boards
  */
-router.get('/boards', ctx => {
-    passport.authenticate('jwt', async (err, user) => {
-        if (user) {
-            try {
-                const boards = await query.getAllBoards(user.id);
-                ctx.status = 200;
-                ctx.body = {
-                    status: 'success',
-                    data: boards
-                };
-            } catch (e) {
-                ctx.status = 500;
-                ctx.body = {
-                    status: 'error',
-                    message: e.message || 'Server error',
-                };
-            }
-        } else {
-            ctx.status = 403;
-            ctx.body = 'Not Authorized';
-        }
-    })(ctx);
+router.get('/boards', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
+    try {
+        const boards = await query.getAllBoards(user.id);
+        ctx.status = 200;
+        ctx.body = {
+            status: 'success',
+            data: boards
+        };
+    } catch (e) {
+        ctx.status = 500;
+        ctx.body = {
+            status: 'error',
+            message: e.message || 'Server error',
+        };
+    }
 });
 
 /**
  * Get board by id
  */
 router.get('/boards/:id', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { id } = ctx.params;
-        const board = await query.getBoardById(id);
+        const board = await query.getBoardById(user.id, id);
         if (board.length) {
             ctx.status = 200;
             ctx.body = {
@@ -60,9 +71,18 @@ router.get('/boards/:id', async ctx => {
  * Create new board
  */
 router.post('/boards', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { body } = ctx.request;
-        const res = await query.addBoard(body);
+        const res = await query.addBoard(user.id, body);
         if (res.length) {
             ctx.status = 201;
             ctx.body = {
@@ -89,10 +109,19 @@ router.post('/boards', async ctx => {
  * Update board
  */
 router.put('/boards/:id', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { id } = ctx.params;
         const { body } = ctx.request;
-        const res = await query.updateBoard(id, body);
+        const res = await query.updateBoard(user.id, id, body);
         if (res.length) {
             ctx.status = 200;
             ctx.body = {
@@ -119,9 +148,18 @@ router.put('/boards/:id', async ctx => {
  * Delete board
  */
 router.delete('/boards/:id', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { id } = ctx.params;
-        const res = await query.deleteBoard(id);
+        const res = await query.deleteBoard(user.id, id);
         if (res.length) {
             ctx.status = 200;
             ctx.body = {

@@ -5,26 +5,27 @@ const getAllBoards = user_id =>
         .select('*')
         .where({ user_id });
 
-const getBoardById = id =>
+const getBoardById = (user_id, id) =>
     knex('boards')
         .select('*')
-        .where({ id: parseInt(id) });
+        .where({ id: parseInt(id), user_id });
 
-const addBoard = board =>
+const addBoard = (user_id, board) =>
     knex('boards')
         .insert(board)
+        .where({ user_id })
         .returning('*');
 
-const updateBoard = (id, data) =>
+const updateBoard = (user_id, id, data) =>
     knex('boards')
         .update(data)
-        .where({ id: parseInt(id) })
+        .where({ id: parseInt(id), user_id })
         .returning('*');
 
-const deleteBoard = id =>
+const deleteBoard = (user_id, id) =>
     knex('boards')
         .del()
-        .where({ id: parseInt(id) })
+        .where({ id: parseInt(id), user_id })
         .returning('*');
 
 module.exports = {
