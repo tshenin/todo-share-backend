@@ -27,7 +27,6 @@ const addTodo = (user_id, todo) => {
         .returning('*');
 }
 
-
 const updateTodo = (user_id, id, data) =>
     knex('todos')
         .update(data)
@@ -35,11 +34,7 @@ const updateTodo = (user_id, id, data) =>
         .returning('*');
 
 const deleteTodo = (user_id, id) => {
-    const sub = knex('boards')
-        .select('id')
-        .where({ id, user_id });
-
-    knex('todos')
+    return knex('todos')
         .del()
         .where({ id: parseInt(id) })
         .returning('*');
