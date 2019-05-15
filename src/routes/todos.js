@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const query = require('../db/queries/todos');
+const { authorize } = require('../services/auth.service');
 
 const router = new Router();
 
@@ -7,13 +8,22 @@ const router = new Router();
  * Get all todos or get all todos for board
  */
 router.get('/todos', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     let todos = [];
     try {
         const { board } = ctx.query;
         if (board) {
-            todos = await query.getTodosByBoardId(board);
+            todos = await query.getTodosByBoardId(user.id, board);
         } else {
-            todos = await query.getAllTodos();
+            todos = await query.getAllTodos(user.id);
         }
         ctx.body = {
             status: 'success',
@@ -52,9 +62,18 @@ router.get('/todos/:id', async ctx => {
  * Create new todo
  */
 router.post('/todos', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { body } = ctx.request;
-        const res = await query.addTodo(body);
+        const res = await query.addTodo(user.id, body);
         if (res.length) {
             ctx.status = 201;
             ctx.body = {
@@ -81,10 +100,19 @@ router.post('/todos', async ctx => {
  * Update todo
  */
 router.put('/todos/:id', async ctx => {
+    let user;
+    try {
+        user = await authorize(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+        return;
+    }
+
     try {
         const { id } = ctx.params;
         const { body } = ctx.request;
-        const res = await query.updateTodo(id, body);
+        const res = await query.updateTodo(user.id, id, body);
         if (res.length) {
             ctx.status = 200;
             ctx.body = {

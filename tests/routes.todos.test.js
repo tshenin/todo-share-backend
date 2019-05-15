@@ -32,14 +32,18 @@ describe('routes: todos', () => {
     });
 
     test('get all todos', async () => {
-        const response = await agent.get('/todos');
+        const response = await agent.get('/todos')
+            .set('Authorization', `bearer ${token}`);
+
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
     });
 
     test('get todo by board id', async () => {
-        const response = await agent.get('/todos?board=1');
+        const response = await agent.get('/todos?board=1')
+            .set('Authorization', `bearer ${token}`);
+
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -48,8 +52,10 @@ describe('routes: todos', () => {
     test('add new todo', async () => {
         const boards = await agent.get('/boards')
             .set('Authorization', `bearer ${token}`);
+
         let board = boards.body.data[0];
         const response = await agent.post('/todos')
+            .set('Authorization', `bearer ${token}`)
             .send({
                 title: 'New from test',
                 desc: 'New desc',
@@ -62,10 +68,14 @@ describe('routes: todos', () => {
     });
 
     test('update todo', async () => {
-        const todos = await knex.select('*').from('todos');
-        const todo = todos[0];
+        const todos = await agent.get('/todos')
+            .set('Authorization', `bearer ${token}`);
+
+        const todo = todos.body.data[0];
         const response = await agent.put(`/todos/${todo.id}`)
+            .set('Authorization', `bearer ${token}`)
             .send({ desc: 'Updated desc' });
+
         expect(response.status).toEqual(200);
         expect(response.type).toEqual('application/json');
         expect(response.body.status).toEqual('success');
@@ -73,6 +83,7 @@ describe('routes: todos', () => {
 
     test('update todo: should be an error', async () => {
         const response = await agent.put('/todos/99999')
+            .set('Authorization', `bearer ${token}`)
             .send({ desc: 'Updated desc' });
         expect(response.status).toEqual(404);
     });
