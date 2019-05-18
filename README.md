@@ -14,3 +14,5 @@ todo
 - add service between routes and queries
 - trim and encode/decode bofore saving/returning in base
 - check jwt for todos update and add
+- salt the password
+- auth middleware

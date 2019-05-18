@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 
 const query = require('../db/queries/boards');
-const { authorize } = require('../services/auth.service');
+const { auth } = require('../services/auth.service');
 const router = new Router();
 
 /**
@@ -10,16 +10,14 @@ const router = new Router();
 router.get('/boards', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
         const boards = await query.getAllBoards(user.id);
-        ctx.status = 200;
         ctx.body = {
             status: 'success',
             data: boards
@@ -39,11 +37,10 @@ router.get('/boards', async ctx => {
 router.get('/boards/:id', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
@@ -73,11 +70,10 @@ router.get('/boards/:id', async ctx => {
 router.post('/boards', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
@@ -111,11 +107,10 @@ router.post('/boards', async ctx => {
 router.put('/boards/:id', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
@@ -150,11 +145,10 @@ router.put('/boards/:id', async ctx => {
 router.delete('/boards/:id', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {

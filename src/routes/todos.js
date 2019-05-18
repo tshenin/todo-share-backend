@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const query = require('../db/queries/todos');
-const { authorize } = require('../services/auth.service');
+const { auth } = require('../services/auth.service');
 
 const router = new Router();
 
@@ -10,14 +10,13 @@ const router = new Router();
 router.get('/todos', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
-
     let todos = [];
+
     try {
         const { board } = ctx.query;
         if (board) {
@@ -38,6 +37,14 @@ router.get('/todos', async ctx => {
  * Get todo by id
  */
 router.get('/todos/:id', async ctx => {
+    let user;
+    try {
+        user = await auth(ctx);
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+    }
+
     try {
         const { id } = ctx.params;
         const todo = await query.getTodoById(id);
@@ -64,11 +71,12 @@ router.get('/todos/:id', async ctx => {
 router.post('/todos', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
+        ctx.state.user = user;
+        next();
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
@@ -102,11 +110,12 @@ router.post('/todos', async ctx => {
 router.put('/todos/:id', async ctx => {
     let user;
     try {
-        user = await authorize(ctx);
+        user = await auth(ctx);
+        ctx.state.user = user;
+        next();
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
-        return;
     }
 
     try {
@@ -139,6 +148,16 @@ router.put('/todos/:id', async ctx => {
  * Delete todo
  */
 router.delete('/todos/:id', async ctx => {
+    let user;
+    try {
+        user = await auth(ctx);
+        ctx.state.user = user;
+        next();
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+    }
+
     try {
         const { id } = ctx.params;
         const res = await query.deleteTodo(id);

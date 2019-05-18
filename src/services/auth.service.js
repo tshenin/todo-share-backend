@@ -1,6 +1,17 @@
 const passport = require('koa-passport');
 
-const authorize = (ctx) => new Promise((resolve, reject) => {
+const authUser = () => async (ctx, next) => {
+    try {
+        let user = await auth(ctx);
+        ctx.state.user = user;
+        next();
+    } catch (e) {
+        ctx.status = 403;
+        ctx.body = e || 'Not Authorized';
+    }
+}
+
+const auth = async ctx => new Promise((resolve, reject) => {
     passport.authenticate('jwt', async (err, user) => {
         if (err) return reject(err);
 
@@ -11,5 +22,6 @@ const authorize = (ctx) => new Promise((resolve, reject) => {
 });
 
 module.exports = {
-    authorize
+    authUser,
+    auth
 };
