@@ -72,8 +72,6 @@ router.post('/todos', async ctx => {
     let user;
     try {
         user = await auth(ctx);
-        ctx.state.user = user;
-        next();
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
@@ -82,7 +80,7 @@ router.post('/todos', async ctx => {
     try {
         const { body } = ctx.request;
         const res = await query.addTodo(user.id, body);
-        if (res.length) {
+        if (res && res.length) {
             ctx.status = 201;
             ctx.body = {
                 status: 'success',
@@ -111,8 +109,6 @@ router.put('/todos/:id', async ctx => {
     let user;
     try {
         user = await auth(ctx);
-        ctx.state.user = user;
-        next();
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
@@ -122,7 +118,7 @@ router.put('/todos/:id', async ctx => {
         const { id } = ctx.params;
         const { body } = ctx.request;
         const res = await query.updateTodo(user.id, id, body);
-        if (res.length) {
+        if (res && res.length) {
             ctx.status = 200;
             ctx.body = {
                 status: 'success',
@@ -151,8 +147,6 @@ router.delete('/todos/:id', async ctx => {
     let user;
     try {
         user = await auth(ctx);
-        ctx.state.user = user;
-        next();
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';

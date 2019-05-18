@@ -21,22 +21,41 @@ const getTodoById = (user_id, id) => {
         .where({ id: parseInt(id) });
 }
 
-const addTodo = (user_id, todo) => {
+const addTodo = async (user_id, todo) => {
+    const board = await knex('boards')
+        .select('*')
+        .where({ user_id, id: todo.board_id });
+
+    if (board.length) {
+        return knex('todos')
+            .insert(todo)
+            .returning('*');
+    }
+    return await false;
+}
+
+const updateTodo = async (user_id, id, data) => {
+    const sub = knex('boards')
+        .select('id')
+        .where({ user_id });
+
     return knex('todos')
-        .insert(todo)
+        .update(data)
+        .whereIn('board_id', sub)
+        .where({ id })
         .returning('*');
 }
 
-const updateTodo = (user_id, id, data) =>
-    knex('todos')
-        .update(data)
-        .where({ id: parseInt(id) })
-        .returning('*');
 
 const deleteTodo = (user_id, id) => {
+    const sub = knex('boards')
+        .select('id')
+        .where({ user_id });
+
     return knex('todos')
         .del()
-        .where({ id: parseInt(id) })
+        .whereIn('board_id', sub)
+        .where({ id })
         .returning('*');
 }
 
