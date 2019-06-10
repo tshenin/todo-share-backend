@@ -8,7 +8,7 @@ const knex = require('./db/connection');
 const localStrategyOptions = { session: false };
 const jwtStrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'secret_token',
+    secretOrKey: process.env.TOKEN_KEY,
 };
 
 

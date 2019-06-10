@@ -24,7 +24,7 @@ router.post('/auth/register', async (ctx) => {
 router.post('/auth/login', (ctx) => {
     return passport.authenticate('local', (err, user) => {
         if (user) {
-            const token = jwt.sign(user, 'secret_token');
+            const token = jwt.sign(user, process.env.TOKEN_KEY);
             ctx.status = 200;
             ctx.body = { id: user.id, token };
         } else {
