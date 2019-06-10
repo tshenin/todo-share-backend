@@ -3,19 +3,21 @@ const passport = require('koa-passport');
 const jwt = require('jsonwebtoken');
 
 const queries = require('../db/queries/users');
-const { auth, comparePass } = require('../services/auth.service');
+const { auth } = require('../services/auth.service');
 
 const router = new Router();
 
 router.post('/auth/register', async (ctx) => {
     try {
-        const response = await queries.addUser(ctx.request.body);
+        const [data] = await queries.addUser(ctx.request.body);
         ctx.status = 201;
         ctx.body = {
             status: 'success',
-            id: response[0].id
+            id: data.id,
+            token: jwt.sign({ ...data }, process.env.TOKEN_KEY)
         };
     } catch (err) {
+        console.log(err);
         ctx.status = 400;
         ctx.body = { status: 'error', data: err };
     }

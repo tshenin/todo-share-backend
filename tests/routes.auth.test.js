@@ -28,6 +28,8 @@ describe('routes: auth/register', () => {
         const response = await agent.post('/auth/register')
             .send({ username: 'new', password: 'user' });
         expect(response.status).toEqual(201);
+        expect(response.body.id).toBeDefined();
+        expect(response.body.token).toBeDefined();
     });
 
     test('login user', async () => {
