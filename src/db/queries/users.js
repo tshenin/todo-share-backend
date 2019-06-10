@@ -1,13 +1,16 @@
 const knex = require('../connection');
+const bcrypt = require('bcryptjs');
 
-const addUser = user =>
-    knex('users')
+const addUser = user => {
+    const salt = bcrypt.genSaltSync();
+    const hash = bcrypt.hashSync(user.password, salt);
+    return knex('users')
         .insert({
             username: user.username,
-            password: user.password,
+            password: hash,
         })
         .returning('*');
-
+}
 
 module.exports = {
     addUser
