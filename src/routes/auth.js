@@ -3,7 +3,7 @@ const passport = require('koa-passport');
 const jwt = require('jsonwebtoken');
 
 const queries = require('../db/queries/users');
-const { auth } = require('../services/auth.service');
+const { auth, comparePass } = require('../services/auth.service');
 
 const router = new Router();
 
@@ -41,6 +41,7 @@ router.get('/auth/status', async ctx => {
     } catch (e) {
         ctx.status = 403;
         ctx.body = e || 'Not Authorized';
+        return;
     }
 
     ctx.status = 200;

@@ -23,5 +23,5 @@ const auth = async ctx => new Promise((resolve, reject) => {
 
 module.exports = {
     authUser,
-    auth
+    auth,
 };

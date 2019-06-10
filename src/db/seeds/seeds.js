@@ -1,12 +1,17 @@
+const bcrypt = require('bcryptjs');
+
 exports.seed = async knex => {
     await knex('todos').del();
     await knex('boards').del();
     await knex('users').del();
 
+    const salt = bcrypt.genSaltSync();
+    const hash = bcrypt.hashSync('secretinfo', salt);
+
     // Create user
     await knex('users').insert({
         username: 'figaro',
-        password: 'secretinfo'
+        password: hash
     });
     await knex('users').insert({
         username: '123',
