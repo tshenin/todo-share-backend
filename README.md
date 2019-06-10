@@ -13,5 +13,4 @@ todo
 - add travis
 - add service between routes and queries
 - trim and encode/decode bofore saving/returning in base
-- salt the password
 - auth middleware
